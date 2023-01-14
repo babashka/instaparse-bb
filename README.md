@@ -7,6 +7,14 @@ This library can be safely included on your classpath alongside the regular
 JVM Clojure, since it only has `.bb` files which do not conflict with `.clj`
 files.
 
+## Installation
+
+Add this library to your `bb.edn` in the `:deps` map:
+
+``` clojure
+io.github.babashka/instaparse.bb {:git/sha "24706387a55c59c559f7d3e82a2ca00b90966476"}
+```
+
 ## API
 
 Only a subset of instaparse is exposed. If you are missing functionality, please create an issue.
