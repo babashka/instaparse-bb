@@ -2,7 +2,7 @@
 
 A library that loads and wraps [pod-babashka-instaparse](https://github.com/babashka/pod-babashka-instaparse).
 
-This library can be safely included alongside the regular
+This library can be safely included on your classpath alongside the regular
 [instaparse](https://github.com/Engelberg/instaparse) without causing issues for
 JVM Clojure, since it only has `.bb` files which do not conflict with `.clj`
 files.
