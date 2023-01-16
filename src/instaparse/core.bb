@@ -1,7 +1,10 @@
 (ns instaparse.core
   (:require [babashka.pods :as pods]))
 
-(pods/load-pod 'org.babashka/instaparse "0.0.1")
+(pods/load-pod
+ ;; for local dev:
+ #_["clojure" "-Sdeps" "{:deps {ip/ip {:local/root \"/Users/borkdude/dev/pod-babashka-instaparse\"}}}" "-M" "-m" "pod.babashka.instaparse"]
+ 'org.babashka/instaparse "0.0.2")
 
 (require '[pod.babashka.instaparse :as insta])
 
