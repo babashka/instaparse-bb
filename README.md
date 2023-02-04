@@ -1,4 +1,4 @@
-# Instaparse.bb
+# instaparse-bb
 
 A library that loads and wraps [pod-babashka-instaparse](https://github.com/babashka/pod-babashka-instaparse).
 
@@ -12,7 +12,7 @@ files.
 Add this library to your `bb.edn` in the `:deps` map:
 
 ``` clojure
-io.github.babashka/instaparse.bb {:git/sha "24706387a55c59c559f7d3e82a2ca00b90966476"}
+io.github.babashka/instaparse-bb {:git/sha "24706387a55c59c559f7d3e82a2ca00b90966476"}
 ```
 
 ## API
