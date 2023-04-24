@@ -12,8 +12,10 @@ files.
 Add this library to your `bb.edn` in the `:deps` map:
 
 ``` clojure
-io.github.babashka/instaparse-bb {:git/sha "24706387a55c59c559f7d3e82a2ca00b90966476"}
+io.github.babashka/instaparse-bb {:git/sha "<latest-sha>"}
 ```
+
+Replace `<latest-sha>` with the latest SHA of this repo or use a tagged version.
 
 ## API
 
