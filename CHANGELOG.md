@@ -1,6 +1,6 @@
 # Changelog
 
-[instaparse-bb](https://github.com/babashka/instaparse-bb): Use instaparse from babashka
+[instaparse-bb](https://github.com/babashka/instaparse-bb): Use [instaparse](https://github.com/Engelberg/instaparse) from babashka
 
 ## 0.0.3
 
