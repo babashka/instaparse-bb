@@ -23,7 +23,9 @@ Only a subset of instaparse is exposed. If you are missing functionality, please
 
 - `parser`
 - `parse`
+- `parses`
 - `failure?`
+- `transform`
 
 ## Differences with instaparse
 
