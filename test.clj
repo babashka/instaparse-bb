@@ -70,3 +70,31 @@
                            :SUBJECT (comp str/reverse str/upper-case str/join)
                            :TYPE (fn [t] (str t "::"))}
                        (insta/parse commit-msg-parser-enlive "feat: adding a new awesome feature"))))
+
+;; test defparser
+
+(defn tidy-string [s]
+  (-> s str/trim-newline (str/replace #"\"" "")))
+
+(def msecs-reg #"^\d*\.?\d*$")
+
+;; "A parser to read the output of `time`."
+(insta/defparser elapsed-time-parser
+  (str
+   "<S> = <Preamable> Msecs <Postamble>;"
+   "Preamable = \"Elapsed time: \";"
+   "Postamble = \" msecs\";"
+   "<Msecs> = #'[^ ]*'" ))
+
+(defn read-time [s]
+  (->> s
+       tidy-string
+       (insta/parse elapsed-time-parser)
+       first
+       Float.))
+
+;; assert that most of the work is done at compile time with defparser when passed a string
+(assert (> (read-time (with-out-str (time (insta/parser "S = A B; A = 'a'+; B = 'b'+"))))
+           (* 10 (read-time (with-out-str (time (insta/defparser time-parser "S = A B; A = 'a'+; B = 'b'+")))))))
+
+

@@ -74,35 +74,38 @@ something that can have a metamap attached."
   (apply insta/failure? args))
 
 (defmacro defparser
-  "Replicates the call semantics of the `defparser` macro from instaparse."
+  "Replicates the call semantics of the `defparser` macro from instaparse.
+   String specifications are processed at macro-time, offering a performance boost."
   [name grammar & opts]
-  (let [[id parser-ref] (first (apply parser grammar opts))]
-    `(def ~name {~id (quote ~parser-ref)})))
+  (if (string? grammar)
+    (let [[id parser-ref] (first (apply parser grammar opts))]
+      `(def ~name {~id (quote ~parser-ref)}))
+    `(def ~name (parser ~grammar `@opts))))
 
 (defn transform
   "Replicates the `transform` function from instaparse."
   [transform-map parse-tree]
-  ; Detect what kind of tree this is
+                                        ; Detect what kind of tree this is
   (cond
     (string? parse-tree)
-    ; This is a leaf of the tree that should pass through unchanged
+                                        ; This is a leaf of the tree that should pass through unchanged
     parse-tree
 
     (and (map? parse-tree) (:tag parse-tree))
-    ; This is an enlive tree-seq
+                                        ; This is an enlive tree-seq
     (enlive-transform transform-map parse-tree)
     
     (and (vector? parse-tree) (keyword? (first parse-tree)))
-    ; This is a hiccup tree-seq
+                                        ; This is a hiccup tree-seq
     (hiccup-transform transform-map parse-tree)
     
     (sequential? parse-tree)
-    ; This is either a sequence of parse results, or a tree
-    ; with a hidden root tag.
+                                        ; This is either a sequence of parse results, or a tree
+                                        ; with a hidden root tag.
     (map-preserving-meta (partial transform transform-map) parse-tree)
     
     (insta/failure? parse-tree)
-    ; pass failures through unchanged
+                                        ; pass failures through unchanged
     parse-tree
     
     :else
