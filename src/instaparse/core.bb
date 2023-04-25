@@ -73,32 +73,38 @@ something that can have a metamap attached."
 (defn failure? [& args]
   (apply insta/failure? args))
 
+(defmacro defparser
+  "Replicates the call semantics of the `defparser` macro from instaparse."
+  [name grammar & opts]
+  (let [[id parser-ref] (first (apply parser grammar opts))]
+    `(def ~name {~id (quote ~parser-ref)})))
+
 (defn transform
   "Replicates the `transform` function from instaparse."
   [transform-map parse-tree]
-  ; Detect what kind of tree this is
+                                        ; Detect what kind of tree this is
   (cond
     (string? parse-tree)
-    ; This is a leaf of the tree that should pass through unchanged
+                                        ; This is a leaf of the tree that should pass through unchanged
     parse-tree
 
     (and (map? parse-tree) (:tag parse-tree))
-    ; This is an enlive tree-seq
+                                        ; This is an enlive tree-seq
     (enlive-transform transform-map parse-tree)
     
     (and (vector? parse-tree) (keyword? (first parse-tree)))
-    ; This is a hiccup tree-seq
+                                        ; This is a hiccup tree-seq
     (hiccup-transform transform-map parse-tree)
     
     (sequential? parse-tree)
-    ; This is either a sequence of parse results, or a tree
-    ; with a hidden root tag.
+                                        ; This is either a sequence of parse results, or a tree
+                                        ; with a hidden root tag.
     (map-preserving-meta (partial transform transform-map) parse-tree)
     
     (insta/failure? parse-tree)
-    ; pass failures through unchanged
+                                        ; pass failures through unchanged
     parse-tree
     
     :else
     (throw-illegal-argument-exception
-      "Invalid parse-tree, not recognized as either enlive or hiccup format.")))
+     "Invalid parse-tree, not recognized as either enlive or hiccup format.")))

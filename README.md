@@ -28,11 +28,12 @@ Only a subset of instaparse is exposed. If you are missing functionality, please
 - `parses`
 - `failure?`
 - `transform`
+- `defparser`
 
 ## Differences with instaparse
 
 - Parser only works on a string grammar input
-- The result of `parser` must be used with `parse`, it cannot be called as a function directly
+- The result of `parser`/ `defparser` must be used with `parse`, it cannot be called as a function directly
 
 ## Example
 
