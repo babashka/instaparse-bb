@@ -8,6 +8,8 @@
 
 (require '[pod.babashka.instaparse :as insta])
 
+;; transform fn implementation
+
 (defn- map-preserving-meta [f l]
   (with-meta (map f l) (meta l)))
 
@@ -64,11 +66,22 @@ something that can have a metamap attached."
 
 ;; Public functions
 
-(defn parser [& args]
-  (apply insta/parser args))
+(defprotocol Parser
+  (parse [this & opts])
+  (parses [this & opts])
+  (pod-ref [this]))
 
-(defn parse [& args]
-  (apply insta/parse args))
+(defn parser [& args]
+  (let [p (apply insta/parser args)]
+    (reify
+      clojure.lang.IFn
+      (invoke [_ text] (insta/parse p text))
+      (invoke [_ text & opts] (apply insta/parse p text opts))
+      (applyTo [_ args] (apply insta/parse p args))
+      Parser
+      (parse [_ & args] (apply insta/parse p args))
+      (parses [_ & args] (apply insta/parses p args))
+      (pod-ref [_] p))))
 
 (defn failure? [& args]
   (apply insta/failure? args))
@@ -78,9 +91,9 @@ something that can have a metamap attached."
    String specifications are processed at macro-time, offering a performance boost."
   [name grammar & opts]
   (if (string? grammar)
-    (let [[id parser-ref] (first (apply parser grammar opts))]
-      `(def ~name {~id (quote ~parser-ref)}))
-    `(def ~name (parser ~grammar `@opts))))
+    (let [p (apply parser grammar opts)]
+      `(def ~name ~p))
+    `(def ~name (parser ~grammar ~@opts))))
 
 (defn transform
   "Replicates the `transform` function from instaparse."
