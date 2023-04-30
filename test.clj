@@ -1,6 +1,5 @@
 #!/usr/bin/env bb
 
-
 (require '[instaparse.core :as insta]
          '[clojure.string :as str])
 
@@ -73,7 +72,7 @@
 
 ;; test slurp - note the slurp happens inside Clojure code in the pod.
 
-(assert (= (let [p (insta/parser "commit-msg-grammar.txt")]
+(assert (= (let [p (insta/parser "test-resources/commit-msg-grammar.txt")]
              (insta/parse p "feat: adding a new awesome feature"))
            '([:TYPE "feat"] [:SUBJECT [:TEXT "adding a new awesome feature"]])))
 

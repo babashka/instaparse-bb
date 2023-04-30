@@ -1,0 +1,24 @@
+<S>            =       (HEADER <EMPTY-LINE> FOOTER GIT-REPORT? <NEWLINE>*)
+                     / (HEADER <EMPTY-LINE> BODY (<EMPTY-LINE> FOOTER)? GIT-REPORT? <NEWLINE>*)
+                     / (HEADER <EMPTY-LINE> BODY GIT-REPORT? <NEWLINE>*)
+                     / (HEADER GIT-REPORT? <NEWLINE>*);
+<HEADER>       =       TYPE (<'('>SCOPE<')'>)? <':'> <SPACE> SUBJECT;
+TYPE           =       'feat' | 'fix' | 'refactor' | 'perf' | 'style' | 'test' | 'docs' | 'build' | 'ops' | 'chore';
+SCOPE          =       #'[a-zA-Z0-9]+';
+SUBJECT        =       TEXT ISSUE-REF? TEXT? !'.';
+BODY           =       (!PRE-FOOTER PARAGRAPH) / (!PRE-FOOTER PARAGRAPH (<EMPTY-LINE> PARAGRAPH)*);
+PARAGRAPH      =       (ISSUE-REF / TEXT / (NEWLINE !NEWLINE))+;
+PRE-FOOTER     =       NEWLINE+ FOOTER;
+FOOTER         =       FOOTER-ELEMENT (<NEWLINE> FOOTER-ELEMENT)*;
+FOOTER-ELEMENT =       FOOTER-TOKEN <':'> <WHITESPACE> FOOTER-VALUE;
+FOOTER-TOKEN   =       ('BREAKING CHANGE' (<'('>SCOPE<')'>)?) / #'[a-zA-Z\-^\#]+';
+FOOTER-VALUE   =       (ISSUE-REF / TEXT)+;
+GIT-REPORT     =       (<EMPTY-LINE> / <NEWLINE>) COMMENT*;
+COMMENT        =       <'#'> #'[^\n]*' <NEWLINE?> ;
+ISSUE-REF      =       <'#'> ISSUE-ID;
+ISSUE-ID       =       #'([A-Z]+\-)?[0-9]+';
+TEXT           =       #'[^\n\#]+';
+SPACE          =       ' ';
+WHITESPACE     =       #'\s';
+NEWLINE        =       <'\n'>;
+EMPTY-LINE     =       <'\n\n'>;
