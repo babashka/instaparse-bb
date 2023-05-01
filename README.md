@@ -28,11 +28,11 @@ Only a subset of instaparse is exposed. If you are missing functionality, please
 - `parses`
 - `failure?`
 - `transform`
+- `defparser`
 
 ## Differences with instaparse
 
-- Parser only works on a string grammar input
-- The result of `parser` must be used with `parse`, it cannot be called as a function directly
+none for currently exposed functionality
 
 ## Example
 
@@ -47,6 +47,8 @@ Only a subset of instaparse is exposed. If you are missing functionality, please
     B = 'b'+"))
 
 (prn (insta/parse as-and-bs "aaaaabbbaaaabb"))
+
+(prn (as-and-bs "aaaaabbbaaaabb"))
 
 (def failure (insta/parse as-and-bs "xaaaaabbbaaaabb"))
 

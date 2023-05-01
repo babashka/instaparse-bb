@@ -21,7 +21,6 @@
   (str
     "<S>            =       (HEADER <EMPTY-LINE> FOOTER GIT-REPORT? <NEWLINE>*)
                             / ( HEADER <EMPTY-LINE> BODY (<EMPTY-LINE> FOOTER)? GIT-REPORT? <NEWLINE>*)
-
                             / (HEADER <EMPTY-LINE> BODY GIT-REPORT? <NEWLINE>*)
                             / (HEADER GIT-REPORT? <NEWLINE>*);"
     "<HEADER>       =       TYPE (<'('>SCOPE<')'>)? <':'> <SPACE> SUBJECT;"
@@ -44,6 +43,7 @@
     "WHITESPACE     =       #'\\s';"
     "NEWLINE        =       <'\n'>;"
     "EMPTY-LINE     =       <'\n\n'>;"))
+
 
 (def commit-msg-parser-hiccup (insta/parser commit-msg-grammar))
 
@@ -70,3 +70,44 @@
                            :SUBJECT (comp str/reverse str/upper-case str/join)
                            :TYPE (fn [t] (str t "::"))}
                        (insta/parse commit-msg-parser-enlive "feat: adding a new awesome feature"))))
+
+;; test slurp - note the slurp happens inside Clojure code in the pod.
+
+(assert (= (let [p (insta/parser "test-resources/commit-msg-grammar.txt")]
+             (insta/parse p "feat: adding a new awesome feature"))
+           '([:TYPE "feat"] [:SUBJECT [:TEXT "adding a new awesome feature"]])))
+
+;; test IFn - parser is directly callable as a function.
+
+(assert (= (commit-msg-parser-hiccup "feat: adding a new awesome feature")
+           '([:TYPE "feat"] [:SUBJECT [:TEXT "adding a new awesome feature"]])))
+
+
+;; test defparser
+
+(defn tidy-string [s]
+  (-> s str/trim-newline (str/replace #"\"" "")))
+
+(def msecs-reg #"^\d*\.?\d*$")
+
+;; "A parser to read the output of `time`."
+(insta/defparser elapsed-time-parser
+  (str
+   "<S> = <Preamable> Msecs <Postamble>;"
+   "Preamable = \"Elapsed time: \";"
+   "Postamble = \" msecs\";"
+   "<Msecs> = #'[^ ]*'" ))
+
+(defn read-time [s]
+  (->> s
+       tidy-string
+       (insta/parse elapsed-time-parser)
+       first
+       Float.))
+
+;; assert that most of the work is done at compile time with defparser when passed a string
+#_(assert (>))
+;; just evaluate the two times for now.
+
+(read-time (with-out-str (time (insta/parser "S = A B; A = 'a'+; B = 'b'+"))))
+(read-time (with-out-str (time (insta/defparser time-parser "S = A B; A = 'a'+; B = 'b'+"))))

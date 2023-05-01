@@ -8,6 +8,8 @@
 
 (require '[pod.babashka.instaparse :as insta])
 
+;; transform fn implementation
+
 (defn- map-preserving-meta [f l]
   (with-meta (map f l) (meta l)))
 
@@ -64,41 +66,61 @@ something that can have a metamap attached."
 
 ;; Public functions
 
-(defn parser [& args]
-  (apply insta/parser args))
+(defprotocol Parser
+  (parse [this & opts])
+  (parses [this & opts])
+  (pod-ref [this]))
 
-(defn parse [& args]
-  (apply insta/parse args))
+(defn parser [& args]
+  (let [p (apply insta/parser args)]
+    (reify
+      clojure.lang.IFn
+      (invoke [_ text] (insta/parse p text))
+      (invoke [_ text & opts] (apply insta/parse p text opts))
+      (applyTo [_ args] (apply insta/parse p args))
+      Parser
+      (parse [_ & args] (apply insta/parse p args))
+      (parses [_ & args] (apply insta/parses p args))
+      (pod-ref [_] p))))
 
 (defn failure? [& args]
   (apply insta/failure? args))
 
+(defmacro defparser
+  "Replicates the call semantics of the `defparser` macro from instaparse.
+   String specifications are processed at macro-time, offering a performance boost."
+  [name grammar & opts]
+  (if (string? grammar)
+    (let [p (apply parser grammar opts)]
+      `(def ~name ~p))
+    `(def ~name (parser ~grammar ~@opts))))
+
 (defn transform
   "Replicates the `transform` function from instaparse."
   [transform-map parse-tree]
-  ; Detect what kind of tree this is
+  ;; Detect what kind of tree this is
   (cond
     (string? parse-tree)
-    ; This is a leaf of the tree that should pass through unchanged
+    ;; This is a leaf of the tree that should pass through unchanged
     parse-tree
 
     (and (map? parse-tree) (:tag parse-tree))
-    ; This is an enlive tree-seq
+    ;; This is an enlive tree-seq
     (enlive-transform transform-map parse-tree)
     
     (and (vector? parse-tree) (keyword? (first parse-tree)))
-    ; This is a hiccup tree-seq
+    ;; This is a hiccup tree-seq
     (hiccup-transform transform-map parse-tree)
     
     (sequential? parse-tree)
-    ; This is either a sequence of parse results, or a tree
-    ; with a hidden root tag.
+    ;; This is either a sequence of parse results, or a tree
+    ;; with a hidden root tag.
     (map-preserving-meta (partial transform transform-map) parse-tree)
     
     (insta/failure? parse-tree)
-    ; pass failures through unchanged
+    ;; pass failures through unchanged
     parse-tree
     
     :else
     (throw-illegal-argument-exception
-      "Invalid parse-tree, not recognized as either enlive or hiccup format.")))
+     "Invalid parse-tree, not recognized as either enlive or hiccup format.")))
