@@ -44,6 +44,7 @@
     "NEWLINE        =       <'\n'>;"
     "EMPTY-LINE     =       <'\n\n'>;"))
 
+
 (def commit-msg-parser-hiccup (insta/parser commit-msg-grammar))
 
 (def commit-msg-parser-enlive (insta/parser commit-msg-grammar :output-format :enlive))
