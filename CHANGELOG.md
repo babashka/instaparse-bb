@@ -2,10 +2,11 @@
 
 [instaparse-bb](https://github.com/babashka/instaparse-bb): Use [instaparse](https://github.com/Engelberg/instaparse) from babashka
 
+
 ## 0.0.4
 
 - added defparser macro
-
+- support regexes in grammar (by bumping pod to 0.0.4)
 
 ## 0.0.3
 
