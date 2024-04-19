@@ -4,7 +4,7 @@
 (pods/load-pod
  ;; for local dev:
  #_["clojure" "-Sdeps" "{:deps {ip/ip {:local/root \"/Users/borkdude/dev/pod-babashka-instaparse\"}}}" "-M" "-m" "pod.babashka.instaparse"]
- 'org.babashka/instaparse "0.0.3")
+ 'org.babashka/instaparse "0.0.4")
 
 (require '[pod.babashka.instaparse :as insta])
 
