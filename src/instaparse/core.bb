@@ -69,6 +69,7 @@ something that can have a metamap attached."
 (defprotocol Parser
   (parse [this & opts])
   (parses [this & opts])
+  (span [this & opts])
   (pod-ref [this]))
 
 (defn parser [& args]
@@ -81,6 +82,7 @@ something that can have a metamap attached."
       Parser
       (parse [_ & args] (apply insta/parse p args))
       (parses [_ & args] (apply insta/parses p args))
+      (span [_ & args] (apply insta/span args))
       (pod-ref [_] p))))
 
 (defn failure? [& args]
