@@ -4,7 +4,7 @@
 (pods/load-pod
  ;; for local dev:
  #_["clojure" "-Sdeps" "{:deps {ip/ip {:local/root \"/Users/borkdude/dev/pod-babashka-instaparse\"}}}" "-M" "-m" "pod.babashka.instaparse"]
- 'org.babashka/instaparse "0.0.4")
+ 'org.babashka/instaparse "0.0.5")
 
 (require '[pod.babashka.instaparse :as insta])
 
@@ -39,7 +39,7 @@ something that can have a metamap attached."
   (let [transform (transform-map (:tag parse-tree))]
     (cond
       transform
-      (merge-meta 
+      (merge-meta
        (apply transform (map (partial enlive-transform transform-map)
                              (:content parse-tree)))
        (meta parse-tree))
