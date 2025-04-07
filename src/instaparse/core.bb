@@ -69,7 +69,6 @@ something that can have a metamap attached."
 (defprotocol Parser
   (parse [this & opts])
   (parses [this & opts])
-  (span [this & opts])
   (pod-ref [this]))
 
 (defn parser [& args]
@@ -82,7 +81,6 @@ something that can have a metamap attached."
       Parser
       (parse [_ & args] (apply insta/parse p args))
       (parses [_ & args] (apply insta/parses p args))
-      (span [_ & args] (apply insta/span args))
       (pod-ref [_] p))))
 
 (defn failure? [& args]
@@ -126,3 +124,5 @@ something that can have a metamap attached."
     :else
     (throw-illegal-argument-exception
      "Invalid parse-tree, not recognized as either enlive or hiccup format.")))
+
+(defn span [m] (insta/span m))
