@@ -2,6 +2,10 @@
 
 [instaparse-bb](https://github.com/babashka/instaparse-bb): Use [instaparse](https://github.com/Engelberg/instaparse) from babashka
 
+## 0.0.6
+
+- Bump pod, fixes failure handling ([@cap10morgan](https://github.com/cap10morgan))
+
 ## 0.0.5
 
 - expose span function ([@cap10morgan](https://github.com/cap10morgan))
