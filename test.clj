@@ -16,6 +16,17 @@
 
 (assert (insta/failure? failure) "should be true")
 
+;; test get-failure
+
+(let [f (insta/get-failure failure)]
+  (assert (map? f) "get-failure should return a map")
+  (assert (contains? f :index) "failure should contain :index")
+  (assert (contains? f :line) "failure should contain :line")
+  (assert (contains? f :column) "failure should contain :column"))
+
+(assert (nil? (insta/get-failure (insta/parse as-and-bs "aabb")))
+        "get-failure on successful parse should return nil")
+
 (def commit-msg-grammar
   "A PEG grammar to validate and parse conventional commit messages."
   (str

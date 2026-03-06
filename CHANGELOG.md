@@ -2,6 +2,14 @@
 
 [instaparse-bb](https://github.com/babashka/instaparse-bb): Use [instaparse](https://github.com/Engelberg/instaparse) from babashka
 
+## 0.0.7
+
+- Bump pod to 0.0.7
+- Add `add-line-and-column-info-to-metadata`
+- Add `get-failure`
+- Fix opts passing in `parser` (e.g. `:output-format :enlive`)
+- Support `java.net.URL` for grammars
+
 ## 0.0.6
 
 - Bump pod, fixes failure handling ([@cap10morgan](https://github.com/cap10morgan))

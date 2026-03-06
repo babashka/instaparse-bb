@@ -91,6 +91,12 @@ something that can have a metamap attached."
 (defn failure? [& args]
   (apply insta/failure? args))
 
+(defn get-failure
+  "Extracts failure object from failed parse result."
+  [result]
+  (when (insta/failure? result)
+    (:pod.babashka.instaparse/failure result)))
+
 (defmacro defparser
   "Replicates the call semantics of the `defparser` macro from instaparse.
    String specifications are processed at macro-time, offering a performance boost."
