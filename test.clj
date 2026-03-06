@@ -84,6 +84,20 @@
              (insta/parse p "feat: adding a new awesome feature"))
            '([:TYPE "feat"] [:SUBJECT [:TEXT "adding a new awesome feature"]])))
 
+;; test add-line-and-column-info-to-metadata
+
+(let [text "aaaaabbbaaaabb"
+      result (insta/parse as-and-bs text)
+      annotated (insta/add-line-and-column-info-to-metadata text result)]
+  (assert (= {:instaparse.gll/start-line 1
+              :instaparse.gll/start-column 1
+              :instaparse.gll/end-line 1
+              :instaparse.gll/end-column 15
+              :instaparse.gll/start-index 0
+              :instaparse.gll/end-index 14}
+             (meta annotated))
+          "root should have line/column metadata"))
+
 ;; test IFn - parser is directly callable as a function.
 
 (assert (= (commit-msg-parser-hiccup "feat: adding a new awesome feature")

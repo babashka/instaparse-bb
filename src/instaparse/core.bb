@@ -6,7 +6,7 @@
 (pods/load-pod
  ;; for local dev:
  #_["clojure" "-Sdeps" "{:deps {ip/ip {:local/root \"/Users/borkdude/dev/pod-babashka-instaparse\"}}}" "-M" "-m" "pod.babashka.instaparse"]
- 'org.babashka/instaparse "0.0.6")
+ 'org.babashka/instaparse "0.0.7")
 
 (require '[pod.babashka.instaparse :as insta])
 
@@ -131,3 +131,9 @@ something that can have a metamap attached."
      "Invalid parse-tree, not recognized as either enlive or hiccup format.")))
 
 (defn span [m] (insta/span m))
+
+(defn add-line-and-column-info-to-metadata
+  "Given a string `text` and a `parse-tree` for text, return parse tree
+with its metadata annotated with line and column info."
+  [& args]
+  (apply insta/add-line-and-column-info-to-metadata args))
