@@ -1,5 +1,7 @@
 (ns instaparse.core
-  (:require [babashka.pods :as pods]))
+  (:require
+   [babashka.pods :as pods]
+   [clojure.java.io :as io]))
 
 (pods/load-pod
  ;; for local dev:
@@ -71,8 +73,11 @@ something that can have a metamap attached."
   (parses [this & opts])
   (pod-ref [this]))
 
-(defn parser [& args]
-  (let [p (apply insta/parser args)]
+(defn parser [grammar & args]
+  (let [spec (cond
+               (instance? java.net.URL grammar) (slurp grammar)
+               :else grammar)
+        p (insta/parser spec args)]
     (reify
       clojure.lang.IFn
       (invoke [_ text] (insta/parse p text))
