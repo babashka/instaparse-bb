@@ -77,6 +77,13 @@
              (insta/parse p "feat: adding a new awesome feature"))
            '([:TYPE "feat"] [:SUBJECT [:TEXT "adding a new awesome feature"]])))
 
+;; test URI - grammar loaded via java.net.URL
+
+(assert (= (let [p (insta/parser (-> (clojure.java.io/file "test-resources/commit-msg-grammar.txt")
+                                     .toURI .toURL))]
+             (insta/parse p "feat: adding a new awesome feature"))
+           '([:TYPE "feat"] [:SUBJECT [:TEXT "adding a new awesome feature"]])))
+
 ;; test IFn - parser is directly callable as a function.
 
 (assert (= (commit-msg-parser-hiccup "feat: adding a new awesome feature")

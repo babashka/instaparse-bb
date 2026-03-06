@@ -77,7 +77,7 @@ something that can have a metamap attached."
   (let [spec (cond
                (instance? java.net.URL grammar) (slurp grammar)
                :else grammar)
-        p (insta/parser spec args)]
+        p (apply insta/parser spec args)]
     (reify
       clojure.lang.IFn
       (invoke [_ text] (insta/parse p text))
